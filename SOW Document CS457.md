@@ -1,9 +1,9 @@
 # CS 457 Project Statement of Work (SOW) & Protocol Specification Template
 
-**Student Name:** [Your Full Name]  
-**Date:** [YYYY-MM-DD]  
+**Student Name:** Rene Castillo
+**Date:** 2026-09-17  
 **Course:** CS 457 - Computer Networks  
-**Target Server Domain:** `server.[yourlastname].edu`  
+**Target Server Domain:** `server.castillo.edu`  
 
 ---
 
@@ -17,14 +17,14 @@
 > - You are encouraged to use python, but I'm not going to make it a strict requirement. The instructor and TA's ability to help with C or Rust, etc will be diminished in other languages.
 
 ### 1.1 Game Overview
-- **Chosen Game:** [e.g., Terminal Trivia, Tic-Tac-Toe, Connect Four, Battleship]
+- **Chosen Game:** Battleship Battle
 - **Player Capacity:** 2 Players (Simulated via 2 CML Client nodes)
-- **Game Summary:** [Briefly describe the gameplay mechanics and rules]
+- **Game Summary:** Grid target guessing game. Players secretly place 4 battleships on a grid. Ships cannot overlap. Players take turns guessing their opponent's grid coordinates of the ships. If it's a successful hit, the other player must reply with "hit!"; otherwise, reply with "miss!". To win, a player must sink all the other player's ships. A message indicating who won will appear after the game ends. 
 
 ### 1.2 Core Game Rules & Win/Draw Conditions
-- **Turn Mechanics:** [Explain how turn order is enforced between Player 1 and Player 2]
-- **Victory Condition:** [Define how a player wins the game]
-- **Draw/Tie Condition:** [Define how a draw/tie is detected and handled]
+- **Turn Mechanics:** Player 1 starts the game. Player 1 and Player 2 roles are assigned randomly. A message will prompt the user to select a grid coordinate. After Player 1 selects a coordinate and the game tells them whether it's a hit or a miss, Player 2 can try to sink a ship. Player 2 cannot make a move without player 1 doing it first. After Player 2 makes their move, it's Player 1's turn again. This pattern repeats until someone sinks all the boats, and a message appears saying who won. 
+- **Victory Condition:** The first player to sink all the opponent's ships wins. The winner must have ships remaining after their opponent's turn.   
+- **Draw/Tie Condition:** If Player 1 sinks all of Player 2's ships, then Player 2 will have a chance to sink Player 1's ships. If Player 2 also sinks all of Player 1's ships, it's a draw since no ships remain for either player. 
 
 ---
 
