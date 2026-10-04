@@ -1,7 +1,4 @@
 ```mermaid
-  layout: elk
-
-
 stateDiagram-v2
     [*] --> INIT
     INIT --> WAITING_FOR_PLAYERS: server started and listening
