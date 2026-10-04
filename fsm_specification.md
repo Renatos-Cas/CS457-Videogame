@@ -1,7 +1,4 @@
----
-config:
-  theme: forest
----
+```mermaid
 stateDiagram-v2
     [*] --> INIT
     INIT --> WAITING_FOR_PLAYERS: server started and listening
@@ -24,3 +21,4 @@ stateDiagram-v2
     EVALUATE_MOVE --> GAME_OVER: client DISCONNECT, EOF or socket error, forfeit
     GAME_OVER --> CLEANUP: results broadcast
     CLEANUP --> WAITING_FOR_PLAYERS: Reset state
+```
