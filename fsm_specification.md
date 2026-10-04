@@ -1,7 +1,4 @@
 ```mermaid
-
-
-  theme: forest
   layout: elk
 
 
