@@ -1,10 +1,8 @@
 ```mermaid
 
----
-config:
+
   theme: forest
   layout: elk
----
 
 
 stateDiagram-v2
