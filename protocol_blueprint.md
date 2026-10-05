@@ -1,3 +1,5 @@
+protocol_blueprint.md
+
 Framing Rules (applies to all message types): 
  Every JSON object is UTF-8 encoded and terminated by a newline character \n (0x0A). The receiver accumulates incoming bytes into a stream buffer until a \n is encountered, extracts the complete line, and deserializes the JSON object. Leftover after the last /n stay in the buffer until the rest of the message arrives. JSON MUST be a single line. 
 
@@ -374,3 +376,35 @@ last_move object:
 ```text
 {"msg_type":"GAME_OVER","player_id":"SERVER","payload":{"outcome":"WIN","winner":"Player_1","loser":"Player_2","reason":"ALL_SHIPS_SUNK","ships_remaining_Player_1":3,"ships_remaining_Player_2":0,"total_turns":90},"timestamp":1727000900}\n\n
 ```
+
+### Connection Termination and Socket Lifecycle Management 
+
+#### 1. Graceful termination:
+Active client sends a structured DISCONNECT message before terminating. Then calls socket.close(). 
+
+The operating system then initiates the TCP 4-way FIN handshake. 
+
+Server reads the DISCONNECT message, closes its side of the socket, and releases that player's resources.
+
+If a game is in progress, it sets the state to GAME_OVER with outcome FORFEIT, then moves to CLEANUP. 
+
+#### 2. Graceful TERMINATION without DISCONNECT
+Client calls close() or exits normally without sending DISCONNECT. The operating system still sends a TCP FIN, and the server's next recv() on that socket returns 0 bytes (b"") in Python. 
+
+This prevents an infinite loop, since without it the application would consume 100% CPU. 
+
+
+#### 3. Abrupt termination 
+If the network links fail or clients crash, low-level socket operations raise exceptions. 
+
+-ConnectionResetError: Happens at recv() or sendall(). The server will handle it as DISCONNECT
+-BrokenPipeError: Happens at sendall() to a close peer. The server will handle it as DISCONNECT
+-TimeoutError: Happens at recv() when a socket timeout is set. The server will handle it as DISCONNECT
+
+#### 4. Server behavior by state 
+LOBBY_WAIT: close socket, remove player, stay in WAITING_FOR_PLAYERS. 
+GAME_OVER OR CLEANUP: Close both sockets and finish the reset. 
+
+IF both clients are gone, the server catches the exception and continues cleanup. 
+
+If a line is not valid UTF-8 or valid JSON, or the buffer grows past 4096 bytes without containing a \n, the message is malformed. If there is no \n and it exceeds the limit, the stream cannot be resynchronized, so the server will close the connection. 
